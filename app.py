@@ -4,13 +4,12 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.naive_bayes import MultinomialNB
 
 
-# Page Config
 st.set_page_config(page_title="AI Spam Detector", page_icon="📩", layout="centered")
 
 st.title("📩 AI Email & SMS Spam Detector")
 st.write("Built using **Multinomial Naïve Bayes**")
 
-# 1. Built-in Dataset (No external files needed)
+
 @st.cache_resource
 def train_spam_model():
     data = {
@@ -28,17 +27,17 @@ def train_spam_model():
             "Will call you back in 10 minutes, driving right now.",
             "Don't forget to submit your lab record before Friday."
         ],
-        'label': [1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0]  # 1 = Spam, 0 = Ham (Legitimate)
+        'label': [1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0]  
     }
     
     df = pd.DataFrame(data)
     
-    # Text Processing & Feature Extraction
+    
     vectorizer = CountVectorizer()
     X = vectorizer.fit_transform(df['text'])
     y = df['label']
     
-    # Train Naïve Bayes Model
+    
     model = MultinomialNB()
     model.fit(X, y)
     
@@ -48,7 +47,7 @@ model, vectorizer = train_spam_model()
 
 st.markdown("---")
 
-# 2. User Input
+
 user_input = st.text_area("Enter Email / Message Content Below:", height=120, 
                           placeholder="e.g., Congratulations! You have won a free gift card. Click here...")
 
@@ -56,7 +55,7 @@ if st.button("Analyze Message"):
     if user_input.strip() == "":
         st.warning("Please type or paste a message to analyze.")
     else:
-        # Preprocess & Predict
+        
         input_vector = vectorizer.transform([user_input])
         prediction = model.predict(input_vector)[0]
         probabilities = model.predict_proba(input_vector)[0]
